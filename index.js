@@ -160,10 +160,9 @@ class Kraken {
         .catch(res => this.isFn(cb) && cb(e, null))
       return data
     } else {
-      throw new Error(
-        method +
-          "is not a valid API method `'Time', 'Assets', 'AssetPairs', 'Ticker', 'Depth', 'Trades', 'Spread', 'OHLC'`."
-      )
+      throw new Error(method + 'Not a valid private method. See ln. 68 of /kraken-sdk/index.js')
     }
   }
 }
+
+module.exports = Kraken
