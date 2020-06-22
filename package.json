@@ -4,19 +4,33 @@
   "description": "SDK for Kraken Exchange",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tsc": "tsc",
+    "test": "jest"
   },
   "keywords": [
     "Kraken",
     "Crypto",
     "Exchange",
     "Trading",
-    "NodeJS"
+    "NodeJS",
+    "kraken",
+    "crypto",
+    "cryptocurrency",
+    "exchange",
+    "trading",
+    "nodejs",
+    "algorithmic"
   ],
   "author": "Daniel Griffiths",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.0",
-    "crypto": "^1.0.1"
+    "axios": "^0.19.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.0",
+    "@types/node": "^14.0.13",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.1.0",
+    "typescript": "^3.9.5"
   }
 }
