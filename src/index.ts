@@ -7,7 +7,7 @@ import Http from './Http'
 
 import { KrakenSDK } from './types'
 
-export default class Kraken {
+module.exports = class Kraken {
   private SECRET: string
   private KEY: string
   private prefix: string
@@ -16,8 +16,8 @@ export default class Kraken {
   constructor({ KEY, SECRET, version }: KrakenSDK.Params) {
     this.SECRET = SECRET
     this.KEY = KEY
-    this.prefix = !!version ? version : Constants.version
-    this.Http = Http({ KEY, SECRET })
+    this.prefix = '/' + (!!version ? version : Constants.version)
+    this.Http = Http(KEY)
   }
 
   /**
@@ -72,22 +72,15 @@ export default class Kraken {
     return `${method} not valid private method: ${methods.join(', ')}`
   }
 
-  private signRequest(path: string, queryString: string, timestamp: string): string {
-    const secret_buffer = Buffer.from(this.SECRET, 'base64')
-    console.log('secret_buffer', secret_buffer)
-    const api_post = 'nonce=' + timestamp + queryString
-    console.log('api_post', api_post)
+  private signRequest(path: string, nonce: string, qs: string): string {
     const hash = crypto
       .createHash('sha256')
-      .update(api_post)
+      .update(`${nonce}${qs}`)
       .digest('base64')
-    console.log('hash', hash)
-    const hmac = crypto
-      .createHmac('sha512', secret_buffer)
-      .update(path + hash)
+    return crypto
+      .createHmac('sha512', Buffer.from(this.SECRET, 'base64'))
+      .update(`${path}${hash}`)
       .digest('base64')
-    console.log('hmac', hmac)
-    return hmac
   }
 
   /**
@@ -124,9 +117,11 @@ export default class Kraken {
       throw new Error(this.methodError(method, Constants.privateMethods))
     }
 
-    const [params, cb] = Utils.confirmParams(paramsObject, cbfunction)
+    const timestamp = Utils.getTimestamp()
+    const [params, cb] = Utils.confirmParams({ nonce: timestamp, ...paramsObject }, cbfunction)
     const path = Utils.getPath(this.prefix, 'private', method)
-    const signature = this.signRequest(path, Utils.getQueryString(params), Utils.getTimestamp())
+    const queryString = Utils.getQueryString(params)
+    const signature = this.signRequest(path, timestamp, queryString.substring(1))
     const config = { headers: { 'API-Sign': signature } }
 
     try {

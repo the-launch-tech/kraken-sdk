@@ -5,13 +5,13 @@ import * as Utils from './utils'
 
 import { KrakenSDK } from './types'
 
-export default function({ SECRET, KEY }: KrakenSDK.Http.Options): KrakenSDK.Http.Object {
+export default function(KEY: string): KrakenSDK.Http.Object {
   const Http = {
     axios: axios.create({
       baseURL: Constants.baseURL,
       headers: {
         'Content-Type': 'application/json',
-        'API-Key': this.KEY,
+        'API-Key': KEY,
         'User-Agent': 'NodeJS SDK For Kraken Exchange',
       },
     }),
@@ -22,7 +22,7 @@ export default function({ SECRET, KEY }: KrakenSDK.Http.Options): KrakenSDK.Http
       callback,
     }: KrakenSDK.Http.Request): Promise<any> => {
       try {
-        const res: AxiosResponse<any> = await Http.axios.post(path, params, { ...config })
+        const res: AxiosResponse<any> = await Http.axios.post(path, params, config)
 
         if (!res) {
           throw 'Invalid response from KrakenSDK'
