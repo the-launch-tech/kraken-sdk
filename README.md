@@ -1,6 +1,6 @@
 # Kraken SDK 1.0.0
 
-Not published to NPM yet. Scheduled to publish on Friday (06/27/2020)
+Not published to NPM.
 
 ---
 
